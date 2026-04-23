@@ -2,6 +2,15 @@
 
 2024 NH투자증권 빅데이터 경진대회 본선 진출 프로젝트입니다. 미국 ETF 및 주식 관련 테이블 데이터를 활용해 ETF를 지표 기반으로 군집화하고, 생성형 AI로 ETF 구성 종목 설명을 요약하며, SHAP으로 수익성과 연결되는 키워드를 제공하는 ETF 큐레이션 서비스 **Gen Pick**을 제안했습니다.
 
+## Competition
+
+2024 NH투자증권 빅데이터 경진대회는 NH투자증권이 제공한 금융 데이터를 바탕으로 투자자 경험을 개선할 수 있는 데이터 기반 서비스와 분석 아이디어를 제안하는 대회입니다. 본 프로젝트는 예선을 통과해 본선에 진출했으며, 예선 분석 결과 일부는 Dacon 코드 공유에 공개했습니다.
+
+- Dacon 예선 코드 공유: [ETF 지표 기반 군집화와 생성형 AI를 이용한 ETF 요약·단어 중요도 큐레이션](https://dacon.io/competitions/official/236348/codeshare/11652)
+- 발표자료: [assets/gen-pick-presentation.pdf](assets/gen-pick-presentation.pdf)
+- 시연 영상: [assets/gen-pick-demo.mp4](assets/gen-pick-demo.mp4)
+- 분석 보고서: [assets/analysis-report.pdf](assets/analysis-report.pdf)
+
 ## Project Overview
 
 ETF는 수백 개 종목으로 구성되고, 투자자가 참고할 수 있는 지표도 누적수익률, 샤프지수, 트래킹에러, 최대낙폭, 변동성 등 다양합니다. 지표들이 서로 상호작용하기 때문에 투자자가 ETF의 성격을 직접 해석하기 어렵고, 결과적으로 과거 수익률만 보고 ETF를 선택하는 문제가 발생할 수 있습니다.
@@ -65,6 +74,7 @@ ETF 구성 종목의 사업 개요 텍스트를 전처리하고 TF-IDF로 벡터
 ├── README.md
 ├── assets/
 │   ├── analysis-report.pdf
+│   ├── gen-pick-demo.mp4
 │   ├── gen-pick-presentation.pdf
 │   └── presentation-slide-*.png
 ├── docs/
