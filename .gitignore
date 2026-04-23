@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Local / temporary
+tmp/
+output/
+*.log
+
+# Raw contest data and private files
+data/
+data/NH_CONTEST_*.csv
+data/본선/NH_CONTEST_*.csv
+data/*.xlsx
+data/*.docx
+data/*.pdf
+엔에취_*서약서.pdf
+
+# Large submission extras
+\[엔에취\]제출파일_폴더/
+\[엔에취\]제출파일_폴더/*.zip
+\[엔에취\]제출파일_폴더/*.mp4
+
+# Draft notebooks and scratch files kept locally
+2024NH_*.py
+ETF_*.ipynb
+nh.R
+Untitled*.ipynb
+데이터확인*.ipynb
+본선통합*.ipynb
+본선_*.ipynb
+본선_*.py
+테스트.py
+* copy.py
