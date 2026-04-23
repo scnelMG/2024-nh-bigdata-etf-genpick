@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="452" viewBox="0 0 880 452">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="24" y="34" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2933">Top Cluster Feature Importance</text>
+<text x="24" y="85" font-family="Arial, sans-serif" font-size="15" fill="#263238">Cumulative return score</text>
+<rect x="250" y="69" width="520" height="20" rx="3" fill="#33658A"/>
+<text x="778" y="85" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.224</text>
+<text x="24" y="119" font-family="Arial, sans-serif" font-size="15" fill="#263238">Tracking error score</text>
+<rect x="250" y="103" width="278" height="20" rx="3" fill="#33658A"/>
+<text x="536" y="119" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.120</text>
+<text x="24" y="153" font-family="Arial, sans-serif" font-size="15" fill="#263238">Sharpe score</text>
+<rect x="250" y="137" width="276" height="20" rx="3" fill="#33658A"/>
+<text x="534" y="153" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.119</text>
+<text x="24" y="187" font-family="Arial, sans-serif" font-size="15" fill="#263238">dividend_num</text>
+<rect x="250" y="171" width="221" height="20" rx="3" fill="#33658A"/>
+<text x="479" y="187" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.095</text>
+<text x="24" y="221" font-family="Arial, sans-serif" font-size="15" fill="#263238">1Y total return</text>
+<rect x="250" y="205" width="165" height="20" rx="3" fill="#33658A"/>
+<text x="423" y="221" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.071</text>
+<text x="24" y="255" font-family="Arial, sans-serif" font-size="15" fill="#263238">Volatility score</text>
+<rect x="250" y="239" width="150" height="20" rx="3" fill="#33658A"/>
+<text x="408" y="255" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.065</text>
+<text x="24" y="289" font-family="Arial, sans-serif" font-size="15" fill="#263238">cus_cgr_act_cnt_rt_21</text>
+<rect x="250" y="273" width="115" height="20" rx="3" fill="#33658A"/>
+<text x="373" y="289" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.050</text>
+<text x="24" y="323" font-family="Arial, sans-serif" font-size="15" fill="#263238">Information ratio score</text>
+<rect x="250" y="307" width="99" height="20" rx="3" fill="#33658A"/>
+<text x="357" y="323" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.043</text>
+<text x="24" y="357" font-family="Arial, sans-serif" font-size="15" fill="#263238">1M total return</text>
+<rect x="250" y="341" width="88" height="20" rx="3" fill="#33658A"/>
+<text x="346" y="357" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.038</text>
+<text x="24" y="391" font-family="Arial, sans-serif" font-size="15" fill="#263238">cus_cgr_act_cnt_rt_32</text>
+<rect x="250" y="375" width="60" height="20" rx="3" fill="#33658A"/>
+<text x="318" y="391" font-family="Arial, sans-serif" font-size="14" fill="#374151">0.026</text>
+</svg>
