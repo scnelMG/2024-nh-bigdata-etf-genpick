@@ -25,6 +25,7 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bo
 # 텍스트 처리
 from sklearn.feature_extraction.text import TfidfVectorizer
 import re
+import os
 # import nltk
 # 필요한 NLTK 데이터를 다운로드합니다.
 # nltk.download('stopwords')
@@ -511,8 +512,19 @@ print('3-2. 생성형 AI를 이용한 요약 진행')
 # gpt-4o-mini 모델 사용
 # Azure openai에서 제공하는 예시 코드 활용
 
-# 발급 받은 API KEY 입력 필요
-API_KEY = "YOUR_API_KEY"
+# Azure OpenAI credentials are loaded from environment variables.
+# Required when running the generative summary section:
+#   AZURE_OPENAI_API_KEY
+# Optional:
+#   AZURE_OPENAI_ENDPOINT
+API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+if not API_KEY:
+    raise EnvironmentError("Set AZURE_OPENAI_API_KEY before running the summary step.")
+
+ENDPOINT = os.getenv(
+    "AZURE_OPENAI_ENDPOINT",
+    "https://<resource-name>.openai.azure.com/openai/deployments/<deployment-name>/chat/completions?api-version=2024-02-15-preview",
+)
 headers = {
     "Content-Type": "application/json",
     "api-key": API_KEY,
@@ -544,8 +556,6 @@ payload = {
   "top_p": 0.95,
   "max_tokens": 800
 }
-
-ENDPOINT = "https://nhpass2024.openai.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-02-15-preview"
 
 # 요청 보내기
 try:

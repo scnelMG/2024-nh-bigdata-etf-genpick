@@ -16,3 +16,5 @@
 | `sample_top_holdings_descriptions.csv` | 구성 비율 상위 종목 설명 입력 예시 |
 
 원본 NH투자증권 제공 테이블은 데이터 권한과 용량 문제로 공개 대상에서 제외했습니다.
+
+`assets/*.svg` 차트는 이 폴더의 CSV 결과를 바탕으로 `scripts/generate_readme_charts.py`에서 재생성한 포트폴리오용 시각화입니다.
