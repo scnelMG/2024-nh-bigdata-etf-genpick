@@ -44,7 +44,7 @@ K-means가 Silhouette과 Calinski-Harabasz에서 가장 높고 Davies-Bouldin에
 | 1 | acl_pft_rt_z_sor | 누적수익률 점수 |
 | 2 | trk_err_z_sor | 트래킹에러 점수 |
 | 3 | shpr_z_sor | 샤프지수 점수 |
-| 4 | dividend_total | 배당금액 |
+| 4 | dividend_num | 배당 주기/횟수 |
 | 5 | yr1_tot_pft_rt | 1년 총수익률 |
 
 ## 3. Generative AI ETF Summary

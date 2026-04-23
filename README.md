@@ -23,6 +23,8 @@ Gen Pick은 이 문제를 세 단계로 해결합니다.
 
 ## Key Results
 
+> 참고: 아래 차트는 발표자료 원본 이미지를 그대로 가져온 것이 아니라, `results/`에 저장된 프로젝트 결과 CSV를 바탕으로 GitHub 포트폴리오용으로 다시 생성한 시각화입니다.
+
 ### Clustering
 
 - 대상: 253개 ETF, 23개 지표
@@ -35,7 +37,7 @@ Gen Pick은 이 문제를 세 단계로 해결합니다.
 
 ### Cluster Interpretation
 
-XGBoost 분류 모델로 군집 결과를 예측하고 Feature Importance를 확인했습니다. 군집 구분에 크게 작용한 지표는 누적수익률 점수, 트래킹에러 점수, 샤프지수 점수, 배당금액, 1년 총수익률이었습니다.
+XGBoost 분류 모델로 군집 결과를 예측하고 Feature Importance를 확인했습니다. 저장된 결과 CSV 기준으로 군집 구분에 크게 작용한 지표는 누적수익률 점수, 트래킹에러 점수, 샤프지수 점수, 배당 주기/횟수, 1년 총수익률이었습니다.
 
 ![Feature importance](assets/cluster-feature-importance.svg)
 
@@ -78,7 +80,10 @@ ETF 구성 종목의 사업 개요 텍스트를 전처리하고 TF-IDF로 벡터
 │   ├── cluster_metric_means.csv
 │   ├── keyword_importance_shap.csv
 │   └── sample_*_shap_values.csv
+├── scripts/
+│   └── generate_readme_charts.py
 ├── src/
+│   ├── README.md
 │   ├── clustering_pipeline.py
 │   └── gen_pick_full_pipeline.py
 └── requirements.txt
