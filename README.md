@@ -1,165 +1,175 @@
-# Gen Pick: ETF 지표 기반 군집화와 생성형 AI ETF 큐레이션
+# Gen Pick: ETF Clustering and Generative AI Summary
 
-2024 NH투자증권 빅데이터 경진대회 본선 진출 프로젝트입니다. ETF 지표 기반 군집화로 투자자 유형별 대표 ETF를 추천하고, 생성형 AI 요약과 SHAP 키워드 분석으로 ETF 구성 종목 정보를 쉽게 설명하는 서비스 **Gen Pick**을 제안했습니다.
+Gen Pick is a finance data-product prototype from the 2024 NH Investment & Securities Big Data Competition. It groups ETFs by measurable investment, risk, dividend, and customer-holding indicators, selects representative ETFs for each cluster, and uses generative AI plus SHAP keyword evidence to make the ETF composition easier to inspect.
 
-- 기간: 2024.08 - 2024.10
-- 성과: 본선 진출
-- 역할: 생성형 AI 기반 ETF 요약 설계, 요약 품질 검증 기준 설계, SHAP 키워드 분석
-- 사용 기술: Python, scikit-learn, XGBoost, SHAP, TF-IDF, GPT-4o-mini
+This repository is a public-safe portfolio version. It keeps the explainable analysis path, selected result tables, presentation assets, and code structure, while excluding contest-restricted raw data and private NH materials.
 
-## Links
+## Quick Review Path
 
-- Dacon 예선 코드 공유: [ETF 지표 기반 군집화와 생성형 AI를 이용한 ETF 요약·단어 중요도 큐레이션](https://dacon.io/competitions/official/236348/codeshare/11652)
-- 발표자료: [assets/gen-pick-presentation.pdf](assets/gen-pick-presentation.pdf)
-- 시연 영상: [assets/gen-pick-demo.mp4](assets/gen-pick-demo.mp4)
-- 분석 보고서: [assets/analysis-report.pdf](assets/analysis-report.pdf)
+1. Start with this README for the problem, role, data boundary, evidence, and limitations.
+2. Read [docs/methodology.md](docs/methodology.md) for the clustering, recommendation, generative AI summary, and SHAP workflow.
+3. Read [docs/data-notice.md](docs/data-notice.md) before reusing any data or asset.
+4. Inspect [results/](results/) for public-safe outputs, especially `clustering_model_scores.csv`, `cluster_feature_importance.csv`, `cluster_metric_means.csv`, and `keyword_importance_shap.csv`.
+5. Review the presentation-derived evidence images in [assets/](assets/) and the pipeline code in [src/](src/).
 
-## 1. 프로젝트 개요
+## Project Snapshot
 
-| 항목 | 내용 |
+| Item | Detail |
 | --- | --- |
-| 기간 | 2024.08 - 2024.10 |
-| 대회 | 2024 NH투자증권 빅데이터 경진대회 |
-| 성과 | 본선 진출 |
-| 팀 구성 | 3명 |
-| 역할 | 생성형 AI 요약 설계, 평가 기준 설계, SHAP 키워드 분석 |
-| 목표 | ETF 선택을 돕는 지표 기반 큐레이션 서비스 제안 |
-| 결과물 | 군집화 파이프라인, 대표 ETF 추천, 생성형 AI 요약, SHAP 키워드 분석, 발표자료, 시연 영상 |
+| Period | 2024.08 - 2024.10 |
+| Context | 2024 NH Investment & Securities Big Data Competition |
+| Domain | ETF recommendation, clustering, explainability, finance data product |
+| Public deliverable | ETF type clustering, representative ETF selection, generative AI ETF summaries, SHAP keyword evidence |
+| Stack | Python, pandas, scikit-learn, XGBoost, SHAP, TF-IDF, NLTK, Azure OpenAI-compatible chat endpoint |
+| Public-safe review mode | Inspection-first. Full rerun requires restricted NH source tables that are not included. |
 
-2024 NH투자증권 빅데이터 경진대회는 NH투자증권이 제공한 금융 데이터를 바탕으로 투자자 경험을 개선할 수 있는 데이터 기반 서비스와 분석 아이디어를 제안하는 대회입니다. 본 프로젝트는 예선을 통과해 본선에 진출했으며, 예선 분석 결과 일부는 Dacon 코드 공유에 공개했습니다.
+## Problem
 
-## 2. 문제 정의
+ETF selection is hard to explain from return history alone. An ETF combines many holdings, and the signals that matter to an investor can include accumulated return, tracking error, Sharpe ratio, volatility, dividend behavior, sector or holding concentration, and the way customers already hold similar products.
 
-ETF는 수백 개 종목으로 구성될 수 있고, 투자자가 참고할 수 있는 지표도 누적수익률, 샤프지수, 트래킹에러, 최대낙폭, 변동성 등 다양합니다. 이 지표들은 서로 상호작용하며 ETF 성과에 복합적으로 영향을 미치기 때문에 투자자가 ETF의 성격을 직접 해석하기 어렵습니다.
+Gen Pick frames the problem as a data-product question:
 
-이로 인해 많은 투자자가 지표를 충분히 이해하지 못한 채 과거 수익률 중심으로 ETF를 선택할 수 있습니다. 또한 ETF의 구성 종목이 어떤 사업을 하는지 한눈에 파악하기 어렵기 때문에, ETF가 실제로 어떤 산업과 기술에 노출되어 있는지 이해하기도 쉽지 않습니다.
+- cluster ETFs by interpretable quantitative indicators,
+- pick representative ETFs that make each cluster easier to review,
+- summarize the major holdings so a reviewer can understand what business exposure an ETF actually represents,
+- connect holding-company descriptions to return-related keywords using SHAP.
 
-이 프로젝트는 ETF 선택 과정에서 발생하는 두 가지 문제를 동시에 해결하고자 했습니다.
+The repository does not claim to predict future returns, produce investment advice, or guarantee portfolio performance.
 
-1. 복잡한 ETF 지표를 투자자 유형과 연결해 이해하기 쉽게 만든다.
-2. ETF 구성 종목의 사업 내용을 요약하고, 수익성과 연결되는 키워드를 함께 제공한다.
+## Role and Contribution
 
-## 3. 해결 접근
+My primary contribution was the explainable ETF summary and evidence layer:
 
-1. ETF 지표 23개를 기반으로 유사 ETF를 군집화합니다.
-2. 군집별 대표 ETF를 선정하고, 군집을 설명하는 핵심 지표를 찾습니다.
-3. ETF 구성 종목 설명을 생성형 AI로 요약합니다.
-4. 사업 개요 텍스트와 수익률을 연결해 SHAP 기반 키워드를 도출합니다.
+- designed the generative AI summary flow for ETF holdings,
+- handled the prompt-size constraint by using the top holdings by weight instead of sending every holding description,
+- designed an indirect validation approach for generated summaries using cluster consistency,
+- built the TF-IDF, XGBoost, and SHAP keyword analysis that links company-description terms to return-related signals,
+- organized public-safe outputs and documentation so the project can be reviewed without exposing restricted contest data.
 
-## 4. 핵심 구현
+The clustering and recommendation artifacts are presented as a team competition deliverable. This portfolio README separates my contribution from the broader team result.
 
-### 4.1 ETF 지표 기반 군집화
+## Approach
 
-253개 ETF와 23개 지표를 대상으로 군집화를 진행했습니다. 전처리 단계에서는 Standard Scaling으로 지표 스케일을 맞추고, t-SNE로 차원을 축소해 군집 구조를 확인했습니다.
+### 1. ETF indicator clustering
 
-K-means, 병합 군집화, 스펙트럼 군집화, MeanShift 4가지 알고리즘을 비교했습니다. Elbow method로 후보 군집 수를 도출하고, Silhouette, Calinski-Harabasz, Davies-Bouldin 지표를 기준으로 최종 모델을 선택했습니다. 최종적으로 **K-means, 군집 수 4개**가 가장 적합한 방식으로 선정됐습니다.
+The analysis used 253 ETFs with 23 indicators. The indicators include return windows, accumulated return score, information ratio score, Sharpe score, current ratio score, tracking-error score, maximum drawdown score, volatility score, dividend frequency and amount, customer growth-account ratios, and top-holding concentration.
 
-![Original clustering experiment slide](assets/presentation-slide-14-clustering.png)
+The workflow standardized the indicator scale, used t-SNE for cluster-structure inspection, and compared KMeans, Agglomerative Clustering, Spectral Clustering, and MeanShift. The public result table records KMeans with 4 clusters as the selected method:
 
-### 4.2 군집 해석과 대표 ETF 선정
+| Method | Cluster count | Silhouette | Calinski-Harabasz | Davies-Bouldin |
+| --- | ---: | ---: | ---: | ---: |
+| KMeans | 4 | 0.4343 | 266.6945 | 0.7371 |
+| Agglomerative | 4 | 0.3976 | 236.8202 | 0.7463 |
+| Spectral | 4 | 0.4336 | 261.3545 | 0.7418 |
+| MeanShift | 2 | 0.3455 | 152.7156 | 1.1798 |
 
-군집화 결과를 해석하기 위해 군집 번호를 종속변수로 하는 XGBoost 분류 모델을 구축하고 Feature Importance를 확인했습니다. 군집 구분에 크게 작용한 지표는 누적수익률 점수, 트래킹에러 점수, 샤프지수 점수, 배당 관련 지표, 1년 총수익률이었습니다.
+See [assets/presentation-slide-14-clustering.png](assets/presentation-slide-14-clustering.png) and [results/clustering_model_scores.csv](results/clustering_model_scores.csv).
 
-![Original feature importance slide](assets/presentation-slide-15-feature-importance.png)
+### 2. Recommendation rationale
 
-| Cluster | Interpretation | Representative ETFs |
-| --- | --- | --- |
-| 0 | 고위험 고수익 추구 | SCHB, SPYX, SPHQ, PBUS, SCHX |
-| 1 | 장기 성과 추구 | TECB, ONEQ, FTEC, XLK, XHB |
-| 2 | 안정성 중시 보수적 투자자 | VIOV, FDIS, VTWO, SPSM, PEJ |
-| 3 | 균형 잡힌 리스크와 높은 배당 추구 | NOBL, IHE, SCHD, SDY, OUSA |
+The recommendation surface is cluster-first rather than price-forecast-first. Each ETF is assigned to a cluster, and the representative ETF for a cluster is defined as the ETF closest to the cluster center. This makes the output easier to explain: a reviewer can inspect a small number of representative ETFs before comparing the full ETF universe.
 
-대표 ETF는 각 군집 중심에 가장 가까운 ETF로 정의했습니다. 이를 통해 투자자가 전체 ETF 목록을 직접 비교하지 않고도 각 유형을 대표하는 ETF를 먼저 확인할 수 있도록 설계했습니다.
+An XGBoost classifier was trained to explain cluster membership. The top cluster-discriminating indicators in the public result file are accumulated return score, tracking-error score, Sharpe score, dividend frequency, and 1-year total return. See [results/cluster_feature_importance.csv](results/cluster_feature_importance.csv) and [assets/presentation-slide-15-feature-importance.png](assets/presentation-slide-15-feature-importance.png).
 
-### 4.3 생성형 AI 기반 ETF 요약
+### 3. Generative AI ETF summary
 
-제가 가장 주도적으로 담당한 파트입니다. ETF는 수백 개 구성 종목으로 이루어져 있어 투자자가 ETF의 특성을 한눈에 파악하기 어렵습니다. 이를 해결하기 위해 GPT-4o-mini를 활용해 구성 종목들의 사업 개요를 입력으로 받아 ETF 전체의 특성을 요약하는 기능을 구현했습니다.
+The summary step turns ETF holdings into natural-language descriptions. Because large ETFs can contain many holdings, the prompt uses the top 30 holdings by portfolio weight. That choice preserves the dominant business exposure while keeping the input small enough for the chat endpoint.
 
-구현 과정에서 가장 먼저 마주한 문제는 입력 토큰 제한이었습니다. 구성 종목이 많은 ETF는 모든 종목 설명을 한 번에 입력할 수 없었기 때문에, 구성 비율이 높은 순서대로 최대 30개 종목의 설명만 입력하는 방식을 채택했습니다. ETF의 성격은 비중이 높은 종목들이 크게 결정하기 때문에, 정보량과 입력 가능성 사이의 현실적인 트레이드오프로 판단했습니다.
+The summary quality check was designed around consistency, not around unsupported human labels. Summaries from ETFs in the same cluster should expose similar investment themes and should not conflict with the cluster interpretation.
 
-더 중요한 문제는 생성형 AI 요약 품질을 어떻게 검증할 것인가였습니다. 정답 요약 데이터가 없는 상황에서 출력의 신뢰성을 확보하기 위해 군집 결과와의 정합성을 간접 검증 기준으로 설계했습니다. 동일 군집에 속한 ETF들의 요약 결과가 유사한 키워드와 투자 방향성을 가지는지 확인해, 생성형 AI 출력의 일관성을 점검했습니다.
+### 4. SHAP keyword evidence
 
-### 4.4 SHAP 기반 수익성 키워드 도출
+The keyword workflow uses English company descriptions from ETF holdings, vectorizes them with TF-IDF, trains an XGBoost model against return-related targets, and uses SHAP values to identify words that contribute to the model output.
 
-ETF 구성 종목의 사업 개요 텍스트와 수익성을 연결하는 분석도 진행했습니다. 영문 사업 개요를 전처리한 뒤 TF-IDF로 벡터화하고, XGBoost 회귀 모델로 평균 수익률을 예측했습니다.
+The public keyword evidence is in [results/keyword_importance_shap.csv](results/keyword_importance_shap.csv) and the slide image [assets/presentation-slide-22-shap-keywords.png](assets/presentation-slide-22-shap-keywords.png). The largest public keyword importances include terms such as `platform`, `segment`, `oper`, `develop`, `asset`, and `includ`. These are evidence features, not investment recommendations.
 
-이후 SHAP을 적용해 수익성에 긍정적 또는 부정적으로 영향을 미치는 키워드를 도출했습니다. 단순히 ETF가 어떤 종목으로 구성됐는지 요약하는 데서 끝내지 않고, 어떤 사업 키워드가 수익성과 연결되는지 함께 보여주는 것이 목표였습니다.
+## Data and Public-Safety Boundary
 
-![Original SHAP keyword slide](assets/presentation-slide-22-shap-keywords.png)
+The original analysis depended on NH-provided ETF and stock tables. Those source tables, personal or pledge documents, and contest-restricted data are not included here.
 
-## 5. 데이터 처리 및 공개 범위
+Public-safe files included in this repository:
 
-분석에는 NH투자증권이 제공한 미국 ETF 및 주식 관련 테이블 데이터를 사용했습니다. 주요 데이터는 ETF 점수 정보, ETF 배당 내역, 고객 보유 정보, ETF 구성 종목 정보, 해외 종목 정보 등입니다.
+- analysis and pipeline code,
+- derived result CSVs for clustering, cluster explanation, and SHAP keyword evidence,
+- selected presentation/report/demo assets already present in the repo,
+- documentation describing the method and limits.
 
-최종 군집화 대상은 필요한 지표를 모두 보유한 253개 ETF였습니다. 공개 저장소에는 데이터 권한과 개인정보 보호를 고려해 원본 테이블 전체, 개인정보성 문서, API 키를 포함하지 않았습니다.
+Excluded from publication:
 
-공개 저장소에 포함한 자료는 다음과 같습니다.
+- original NH source tables and raw contest data,
+- NH security pledge PDFs, destruction pledge PDFs, or signed/private documents,
+- raw bundles, archives, or Drive folders,
+- `.env` files, credentials, private keys, and real service credentials,
+- unsupported claims about investment returns or financial advice.
 
-- 분석 코드와 노트북
-- 군집화 및 SHAP 기반 파생 결과 CSV
-- 발표자료 PDF
-- 분석 보고서 PDF
-- 시연 영상
-- 발표자료에서 추출한 원본 슬라이드 이미지
+## Evidence and Results
 
-## 6. 데모 및 결과물
+Reviewer-visible evidence:
 
-| 산출물 | 설명 |
-| --- | --- |
-| [Dacon 코드 공유](https://dacon.io/competitions/official/236348/codeshare/11652) | 예선 분석 코드 공유 |
-| [발표자료](assets/gen-pick-presentation.pdf) | 본선 발표 PDF |
-| [시연 영상](assets/gen-pick-demo.mp4) | Gen Pick 서비스 시연 영상 |
-| [분석 보고서](assets/analysis-report.pdf) | 프로젝트 분석 보고서 |
-| [결과 CSV](results/) | 군집화 성능, Feature Importance, SHAP 키워드 결과 |
+- [results/clustering_model_scores.csv](results/clustering_model_scores.csv): clustering model comparison.
+- [results/cluster_metric_means.csv](results/cluster_metric_means.csv): cluster-level ETF indicator means.
+- [results/cluster_feature_importance.csv](results/cluster_feature_importance.csv): XGBoost explanation of cluster assignment.
+- [results/keyword_importance_shap.csv](results/keyword_importance_shap.csv): SHAP keyword importance from holding-description text.
+- [results/sample_*_shap_values.csv](results/): sample per-holding SHAP outputs.
+- [assets/presentation-slide-14-clustering.png](assets/presentation-slide-14-clustering.png), [assets/presentation-slide-15-feature-importance.png](assets/presentation-slide-15-feature-importance.png), and [assets/presentation-slide-22-shap-keywords.png](assets/presentation-slide-22-shap-keywords.png): visual evidence from the presentation.
+- [assets/gen-pick-presentation.pdf](assets/gen-pick-presentation.pdf), [assets/analysis-report.pdf](assets/analysis-report.pdf), and [assets/gen-pick-demo.mp4](assets/gen-pick-demo.mp4): existing project artifacts.
 
-## 7. 저장소 구성
+The evidence supports the analysis workflow and public-safe outputs. It does not support a claim that the service improves realized investor returns.
+
+## Reproducibility
+
+Full end-to-end reproduction is blocked by data access: the raw NH source tables are not public and are intentionally excluded.
+
+Public inspection path:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Then inspect:
+
+- [notebooks/gen_pick_analysis.ipynb](notebooks/gen_pick_analysis.ipynb) for the original notebook flow,
+- [src/clustering_pipeline.py](src/clustering_pipeline.py) for the clustering pipeline,
+- [src/gen_pick_full_pipeline.py](src/gen_pick_full_pipeline.py) for the integrated clustering, summary, TF-IDF, XGBoost, and SHAP workflow,
+- [results/](results/) for derived outputs that do not require restricted source tables.
+
+The generative AI step requires a locally provided Azure OpenAI-compatible credential. Do not commit real credentials.
+
+## Limitations
+
+- Full rerun is not possible from this public repository because the NH source data is excluded.
+- The clustering metrics evaluate structure in the available feature space; they do not prove investment suitability.
+- The representative ETF selection is an explainability aid, not a personalized financial recommendation.
+- Generated summaries were checked with cluster-consistency logic, not with a gold human-label dataset.
+- SHAP keyword outputs explain the trained text model, not causal drivers of future ETF returns.
+- Public assets should be reviewed again before any external publication because the original contest and Drive materials include restricted pledge and data documents.
+
+## Repository Structure
 
 ```text
 .
-├── README.md
-├── assets/
-│   ├── analysis-report.pdf
-│   ├── gen-pick-demo.mp4
-│   ├── gen-pick-presentation.pdf
-│   └── presentation-slide-*.png
-├── docs/
-│   ├── data-notice.md
-│   ├── methodology.md
-│   └── portfolio-summary.md
-├── notebooks/
-│   └── gen_pick_analysis.ipynb
-├── results/
-│   ├── clustering_model_scores.csv
-│   ├── cluster_feature_importance.csv
-│   ├── cluster_metric_means.csv
-│   ├── keyword_importance_shap.csv
-│   └── sample_*_shap_values.csv
-├── src/
-│   ├── README.md
-│   ├── clustering_pipeline.py
-│   └── gen_pick_full_pipeline.py
-└── requirements.txt
+|-- README.md
+|-- assets/
+|   |-- analysis-report.pdf
+|   |-- gen-pick-demo.mp4
+|   |-- gen-pick-presentation.pdf
+|   `-- presentation-slide-*.png
+|-- docs/
+|   |-- data-notice.md
+|   |-- methodology.md
+|   `-- portfolio-summary.md
+|-- notebooks/
+|   `-- gen_pick_analysis.ipynb
+|-- results/
+|   |-- clustering_model_scores.csv
+|   |-- cluster_feature_importance.csv
+|   |-- cluster_metric_means.csv
+|   |-- keyword_importance_shap.csv
+|   `-- sample_*_shap_values.csv
+|-- src/
+|   |-- clustering_pipeline.py
+|   `-- gen_pick_full_pipeline.py
+`-- requirements.txt
 ```
-
-## 8. 한계와 배운 점
-
-가장 큰 한계는 생성형 AI 요약 품질을 직접 평가할 정답 레이블이 없었다는 점입니다. 군집 정합성을 활용한 검증은 현실적인 간접 평가였지만, 완전한 정량 평가 지표는 아니었습니다. 또한 실제 투자 성과나 사용자 피드백을 기반으로 추천 결과를 검증하는 단계까지는 수행하지 못했습니다.
-
-이 경험을 통해 생성형 AI를 활용한 프로젝트에서는 모델을 호출하는 것만큼 출력 품질을 어떻게 검증할 것인지가 중요하다는 점을 배웠습니다. 정답이 명확하지 않은 요약 문제에서도 일관성을 확인할 수 있는 기준을 먼저 설계해야 결과물을 서비스에 활용할 수 있습니다.
-
-또한 군집화는 결과를 만드는 것보다 해석하는 과정이 더 중요하다는 점을 배웠습니다. Feature Importance로 어떤 지표가 군집을 나누는 데 핵심적으로 작용했는지 확인하면서, 분석 결과를 투자자 유형과 서비스 기능으로 연결할 수 있었습니다.
-
-## 9. 실행 환경
-
-노트북과 코드는 프로젝트 수행 당시의 실험 흐름을 보존한 자료입니다. 원본 NH투자증권 제공 데이터와 API 키는 공개 저장소에서 제외되어 전체 재실행은 제한됩니다.
-
-주요 라이브러리는 다음과 같습니다.
-
-- Python
-- pandas, numpy
-- scikit-learn
-- XGBoost
-- SHAP
-- NLTK
-- requests
-- Azure OpenAI API

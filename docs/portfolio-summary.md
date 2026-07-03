@@ -1,43 +1,71 @@
 # Portfolio Summary
 
-## 프로젝트
+## Project
 
-- 프로젝트명: Gen Pick
-- 기간: 2024.08 - 2024.10
-- 대회: 2024 NH투자증권 빅데이터 경진대회
-- 성과: 본선 진출
-- 팀 구성: 3명
-- 사용 데이터: NH투자증권 제공 미국 ETF 및 주식 관련 테이블 데이터
+Gen Pick is an ETF recommendation and explanation prototype built for the 2024 NH Investment & Securities Big Data Competition. It uses ETF indicators to cluster products, selects representative ETFs for review, summarizes ETF holdings with generative AI, and uses SHAP keyword evidence to explain holding-description signals.
 
-## 문제 정의
+## Problem
 
-ETF 시장이 빠르게 성장하면서 투자자가 선택해야 할 ETF 수와 참고해야 할 지표가 함께 증가했습니다. ETF는 수백 개 종목으로 구성될 수 있고, 성과 판단에 필요한 지표도 수익률, 위험, 추종 오차, 배당, 고객 보유 특성 등으로 복잡하게 나뉩니다.
+ETF review is difficult because a single product can represent many holdings and multiple investment signals at once. A reviewer may need to understand return history, risk, dividend behavior, customer holding patterns, and business exposure before deciding whether an ETF fits a use case.
 
-이 프로젝트는 투자자가 과거 수익률만 보고 ETF를 선택하는 문제를 줄이고, ETF의 구성 종목 정보를 쉽게 이해할 수 있도록 돕는 서비스를 목표로 했습니다.
+Gen Pick reframes the task as an explainable data-product workflow rather than a black-box return forecast.
 
-## 해결 방식
+## Role and Contribution
 
-1. 253개 ETF의 23개 지표를 기반으로 군집화했습니다.
-2. 군집 중심과 가까운 ETF를 대표 ETF로 선정했습니다.
-3. XGBoost Feature Importance로 군집을 설명하는 핵심 지표를 도출했습니다.
-4. GPT-4o-mini로 ETF 구성 종목 사업 개요를 ETF 단위 설명으로 요약했습니다.
-5. TF-IDF, XGBoost, SHAP으로 수익성과 관련된 키워드를 제공했습니다.
+My main contribution was the generative AI and evidence layer:
 
-## 핵심 성과
+- designed the ETF holdings summary flow,
+- handled prompt-size limits by selecting the top 30 holdings by weight,
+- created a cluster-consistency check for generated summaries,
+- connected company-description text to return-related evidence with TF-IDF, XGBoost, and SHAP,
+- prepared the public-safe documentation and review path.
 
-- K-means, 군집 수 4개가 최적 군집화 방식으로 선정됐습니다.
-- 군집 구분에 중요한 지표는 누적수익률 점수, 트래킹에러 점수, 샤프지수 점수, 배당금액, 1년 총수익률이었습니다.
-- 최종 군집은 고위험 고수익, 장기 성과, 안정성 중시, 균형 리스크와 고배당 추구 유형으로 해석했습니다.
-- 생성형 AI 요약 품질을 군집 정합성 기반으로 간접 검증하는 기준을 설계했습니다.
+The clustering and final product concept were team competition outputs.
 
-## 본인 기여
+## Technical Decisions
 
-생성형 AI 기반 ETF 설명 요약 파트를 주도했습니다. ETF 구성 종목 설명을 그대로 모두 입력하면 토큰 제한이 발생했기 때문에, 구성 비율 상위 30개 종목의 사업 개요를 입력으로 사용하는 전략을 설계했습니다.
+Important decisions:
 
-또한 요약 품질 평가 기준이 없다는 문제를 해결하기 위해, 동일 군집 ETF의 요약 결과가 유사한 키워드와 방향성을 가지는지 확인하는 간접 검증 기준을 만들었습니다. 이는 생성형 AI 출력의 신뢰성을 확보하기 위한 현실적인 평가 설계였습니다.
+- use 23 ETF indicators across return, risk, dividend, holding, and customer-ratio dimensions,
+- compare four clustering algorithms and select KMeans with 4 clusters based on public metric outputs,
+- use cluster-center distance to define representative ETFs,
+- use XGBoost feature importance to explain cluster membership,
+- use top-weight holdings for generative summaries to control request size,
+- use SHAP keyword importance to expose text evidence from holding descriptions.
 
-## 배운 점
+## Evidence
 
-첫째, 생성형 AI 출력의 품질 검증은 모델 구현만큼 중요합니다. 정답이 명확하지 않은 요약 문제에서도 일관성을 확인할 수 있는 검증 기준을 설계해야 결과물을 서비스로 사용할 수 있습니다.
+Public evidence lives in:
 
-둘째, 군집화는 알고리즘 선택보다 결과 해석이 중요합니다. Feature Importance로 군집을 설명하는 과정을 통해 분석 결과를 투자자 유형과 서비스 기능으로 연결할 수 있었습니다.
+- `results/clustering_model_scores.csv`,
+- `results/cluster_metric_means.csv`,
+- `results/cluster_feature_importance.csv`,
+- `results/keyword_importance_shap.csv`,
+- `results/sample_*_shap_values.csv`,
+- `assets/presentation-slide-14-clustering.png`,
+- `assets/presentation-slide-15-feature-importance.png`,
+- `assets/presentation-slide-22-shap-keywords.png`.
+
+The evidence supports the analysis and explanation workflow. It does not claim future investment performance.
+
+## Reproducibility
+
+This is an inspection-first public repository. Full rerun requires restricted NH source tables that are intentionally excluded.
+
+Reviewers can inspect:
+
+- the notebook in `notebooks/gen_pick_analysis.ipynb`,
+- the pipeline code in `src/`,
+- the derived result files in `results/`,
+- the method notes in `docs/methodology.md`.
+
+## Public-Safety Notes
+
+Do not publish NH security or destruction pledge PDFs, raw contest data, raw bundles, `.env` files, credentials, or copied Drive folders. The public repository should remain limited to reviewed code, derived outputs, and safe presentation artifacts.
+
+## Limitations
+
+- No public raw data is included.
+- Generated summaries were evaluated by consistency checks, not by a gold summary benchmark.
+- SHAP keyword evidence explains a model trained on available text features; it is not causal financial evidence.
+- The project is not investment advice and should not be used as a live trading or advisory system.

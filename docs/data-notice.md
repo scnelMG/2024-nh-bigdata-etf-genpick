@@ -1,18 +1,39 @@
 # Data Notice
 
-이 프로젝트는 2024 NH투자증권 빅데이터 경진대회에서 제공한 미국 ETF 및 주식 관련 테이블 데이터를 사용했습니다.
+This repository is a public-safe portfolio version of a 2024 NH Investment & Securities Big Data Competition project. The original work used NH-provided ETF and stock tables. Those raw source tables are not redistributed here.
 
-공개 GitHub 저장소에는 다음 자료를 포함합니다.
+## Public Files Included
 
-- 분석 코드
-- 발표자료와 분석 보고서
-- 군집화 및 SHAP 기반 파생 결과물
-- 포트폴리오 설명 문서
+The repository includes:
 
-다음 자료는 공개 업로드 대상에서 제외합니다.
+- analysis and pipeline code,
+- selected derived CSV outputs under `results/`,
+- presentation-derived images under `assets/`,
+- existing presentation, report, and demo assets,
+- method and portfolio documentation.
 
-- NH투자증권 제공 원본 테이블 전체
-- 개인정보 또는 서약서 성격의 문서
-- 대용량 글꼴 zip, 시연 영상 등 포트폴리오 설명에 필수적이지 않은 파일
+These files are intended for project inspection. They are not a complete public dataset.
 
-원본 데이터가 없는 환경에서는 `src/`의 전체 파이프라인을 바로 재실행할 수 없습니다. 대신 `results/`에 포함된 파생 결과물로 핵심 분석 결과를 확인할 수 있습니다.
+## Excluded Materials
+
+The following materials must not be published from local Drive or contest folders:
+
+- original NH source tables and raw contest data,
+- NH security pledge PDFs,
+- NH data destruction pledge PDFs,
+- signed agreements, private PDFs, or personal/team documents,
+- raw source bundles, archive folders, or large zip files,
+- `.env` files, private keys, real credentials, or service access values,
+- unreviewed Drive folders or copied `.git` directories.
+
+## Credential Boundary
+
+The generative AI step requires a locally configured Azure OpenAI-compatible credential. The repository may contain placeholder strings or environment-variable names so the code can explain how to run, but no real credential should be committed.
+
+Any value that grants access to a service must remain outside Git and should be supplied only through the local runtime environment.
+
+## Reuse Boundary
+
+The derived CSV outputs can be inspected to understand the method and evidence. They should not be treated as a substitute for the original NH data, and they should not be used to make investment decisions.
+
+Before any external publication, re-run the safety checks for forbidden file names, large files, and credential patterns, then review the assets for contest or personal information.
