@@ -80,6 +80,14 @@ pip install -r requirements.txt
 
 전체 재현은 NH 제공 원천 데이터가 필요하므로 공개 checkout만으로는 제한됩니다. 공개 저장소에서는 `src/`, `results/`, `docs/`를 통해 분석 흐름과 파생 결과를 검토할 수 있습니다.
 
+## 빠른 검증
+
+공개 포트폴리오 제출 전에는 아래 명령으로 필수 문서와 대용량 tracked 파일 여부를 확인합니다.
+
+```bash
+python scripts/verify_portfolio.py
+```
+
 ## 공개/비공개 경계
 
 포함한 것:
