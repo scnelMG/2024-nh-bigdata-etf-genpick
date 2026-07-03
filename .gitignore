@@ -24,6 +24,10 @@ data/*.pdf
 \[엔에취\]제출파일_폴더/*.zip
 \[엔에취\]제출파일_폴더/*.mp4
 
+# Public portfolio exclusions pending redistribution review
+assets/*.pdf
+assets/*.mp4
+
 # Draft notebooks and scratch files kept locally
 2024NH_*.py
 ETF_*.ipynb
