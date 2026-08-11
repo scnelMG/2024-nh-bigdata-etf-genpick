@@ -1,4 +1,10 @@
+<p align="center">
+  <img src="assets/presentation-slide-14-clustering.png" alt="Gen Pick ETF clustering result" width="720" />
+</p>
+
 # Gen Pick - ETF 클러스터링과 생성형 AI 요약
+
+<p align="center">2024 NH투자증권 빅데이터 경진대회 · 금융 데이터 분석 · ETF 클러스터링 · 생성형 AI</p>
 
 > ETF를 정량 지표로 군집화하고, 대표 ETF와 보유 종목 설명을 생성형 AI/SHAP 근거로 해석한 금융 데이터 프로덕트입니다.
 
@@ -22,6 +28,7 @@ Gen Pick은 2024 NH투자증권 빅데이터 경진대회에서 진행한 ETF �
 | [results/clustering_model_scores.csv](results/clustering_model_scores.csv) | 클러스터링 모델 비교 결과 |
 | [results/cluster_feature_importance.csv](results/cluster_feature_importance.csv) | 군집 설명에 사용한 feature importance |
 | [results/keyword_importance_shap.csv](results/keyword_importance_shap.csv) | 보유 종목 설명 텍스트의 SHAP keyword 근거 |
+| [DACON 코드 공유](https://dacon.io/competitions/official/236348/codeshare/11652?page=1&dtype=random) | 2024 NH투자증권 빅데이터 경진대회 코드 공유 페이지 |
 
 ## 문제 정의
 
