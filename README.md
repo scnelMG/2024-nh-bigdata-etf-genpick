@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/presentation-slide-14-clustering.png" alt="Gen Pick ETF clustering result" width="720" />
-</p>
-
 # Gen Pick - ETF 클러스터링과 생성형 AI 요약
 
 <p align="center">2024 NH투자증권 빅데이터 경진대회 · 금융 데이터 분석 · ETF 클러스터링 · 생성형 AI</p>
@@ -23,9 +19,9 @@ Gen Pick은 2024 NH투자증권 빅데이터 경진대회에서 진행한 ETF �
 
 ETF는 수익률만으로 설명하기 어렵습니다. 추적오차, 변동성, 샤프지수, 배당 성향, 보유 종목 집중도, 고객 보유 패턴처럼 여러 지표를 함께 봐야 합니다. Gen Pick은 ETF를 유사한 성격의 군집으로 나누고, 각 군집의 대표 ETF와 설명 근거를 제공하는 방식으로 리뷰어가 더 빠르게 상품을 이해하도록 설계했습니다.
 
-## 내 역할
+## 담당 범위
 
-팀 프로젝트 산출물이며, 공개 포트폴리오에서 강조하는 기여는 다음과 같습니다.
+팀 프로젝트 결과와 개인 작업을 구분해, 공개 근거로 확인 가능한 작업만 기록합니다.
 
 - ETF 보유 종목 설명을 생성형 AI로 요약하는 흐름 설계
 - 보유 종목 전체를 그대로 넣지 않고 상위 보유 비중 종목 중심으로 prompt size를 제어
@@ -63,6 +59,12 @@ flowchart LR
 | Agglomerative | 4 | 0.3976 | 236.8202 | 0.7463 |
 | Spectral | 4 | 0.4336 | 261.3545 | 0.7418 |
 | MeanShift | 2 | 0.3455 | 152.7156 | 1.1798 |
+
+<p align="center">
+  <img src="assets/presentation-slide-14-clustering.png" alt="실제 발표자료의 Gen Pick ETF 클러스터링 결과" width="720" />
+</p>
+
+<p align="center"><sub>실제 발표자료에서 추출한 ETF 군집화 결과</sub></p>
 
 추가 근거는 `results/`의 파생 CSV와 `assets/presentation-slide-*.png`에서 확인할 수 있습니다.
 
