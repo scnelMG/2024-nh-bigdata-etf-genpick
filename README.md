@@ -19,17 +19,6 @@ Gen Pick은 2024 NH투자증권 빅데이터 경진대회에서 진행한 ETF �
 
 이 저장소는 투자 조언이나 수익률 예측 모델이 아니라, 금융 데이터 분석 과정을 현업자가 검토할 수 있도록 정리한 공개 안전 포트폴리오입니다.
 
-## 빠른 검토 경로
-
-| 먼저 볼 것 | 확인할 내용 |
-| --- | --- |
-| [docs/methodology.md](docs/methodology.md) | 클러스터링, 대표 ETF 선정, 생성형 AI 요약, SHAP 분석 흐름 |
-| [docs/data-notice.md](docs/data-notice.md) | NH 제공 데이터와 공개 제외 자료의 경계 |
-| [results/clustering_model_scores.csv](results/clustering_model_scores.csv) | 클러스터링 모델 비교 결과 |
-| [results/cluster_feature_importance.csv](results/cluster_feature_importance.csv) | 군집 설명에 사용한 feature importance |
-| [results/keyword_importance_shap.csv](results/keyword_importance_shap.csv) | 보유 종목 설명 텍스트의 SHAP keyword 근거 |
-| [DACON 코드 공유](https://dacon.io/competitions/official/236348/codeshare/11652?page=1&dtype=random) | 2024 NH투자증권 빅데이터 경진대회 코드 공유 페이지 |
-
 ## 문제 정의
 
 ETF는 수익률만으로 설명하기 어렵습니다. 추적오차, 변동성, 샤프지수, 배당 성향, 보유 종목 집중도, 고객 보유 패턴처럼 여러 지표를 함께 봐야 합니다. Gen Pick은 ETF를 유사한 성격의 군집으로 나누고, 각 군집의 대표 ETF와 설명 근거를 제공하는 방식으로 리뷰어가 더 빠르게 상품을 이해하도록 설계했습니다.
