@@ -30,4 +30,3 @@ jobs:
               exit 1
             fi
           done < <(git ls-files -z)
-
