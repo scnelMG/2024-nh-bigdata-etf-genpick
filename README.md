@@ -72,6 +72,15 @@ pip install -r requirements.txt
 
 ## 빠른 검증
 
+비공개 데이터 없이 합성 입력으로 날짜 교집합·최근 구간 선택, 표준화, K-Means 군집 분리를 검사합니다. 실제 분석 스크립트가 사용하는 [`src/clustering_core.py`](src/clustering_core.py)를 직접 실행하는 회귀 테스트입니다.
+
+```bash
+pip install -r requirements-test.txt
+python -m unittest discover -s tests -v
+```
+
+GitHub Actions에서도 같은 테스트를 실행합니다. 원본 데이터 전처리 전체, t-SNE·모델 비교, AI 요약·SHAP 및 과거 발표 수치의 재현은 검사 범위에 포함하지 않습니다. 기존 전처리 스크립트의 날짜 교집합을 정렬해 최근 N일 선택이 입력 순서에 좌우되지 않도록 수정했습니다.
+
 공개 포트폴리오 제출 전에는 아래 명령으로 필수 문서와 대용량 tracked 파일 여부를 확인합니다.
 
 ```bash
