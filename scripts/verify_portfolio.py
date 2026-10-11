@@ -46,27 +46,24 @@ def check_readme_markers() -> CheckResult:
 
 
 def tracked_files() -> list[Path]:
-    try:
-        completed = subprocess.run(
-            ["git", "ls-files"],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except FileNotFoundError:
-        return []
-    except subprocess.CalledProcessError:
-        return []
-    return [ROOT / line for line in completed.stdout.splitlines() if line]
+    completed = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
+    return [ROOT / name for name in completed.stdout.decode("utf-8").split("\0") if name]
 
 
 def check_tracked_file_sizes() -> CheckResult:
-    oversized = [
-        path.relative_to(ROOT).as_posix()
-        for path in tracked_files()
-        if path.exists() and path.stat().st_size > MAX_TRACKED_FILE_BYTES
-    ]
+    try:
+        oversized = [
+            path.relative_to(ROOT).as_posix()
+            for path in tracked_files()
+            if path.stat().st_size > MAX_TRACKED_FILE_BYTES
+        ]
+    except (OSError, subprocess.CalledProcessError, UnicodeError) as error:
+        return CheckResult("tracked file size", False, f"could not inspect files: {type(error).__name__}")
     if oversized:
         return CheckResult("tracked file size", False, ", ".join(oversized))
     return CheckResult("tracked file size", True, "no tracked file exceeds 50MB")
