@@ -2,6 +2,7 @@ import warnings
 warnings.filterwarnings("ignore")
 import numpy as np
 import pandas as pd
+from clustering_core import common_dates
 
 
 
@@ -35,7 +36,7 @@ CUS_TP_IFO['tck_iem_cd'] = CUS_TP_IFO['tck_iem_cd'].str.rstrip()
 # 날짜가 표기된 테이블은 ETF_SOR_IFO, CUS_TP_IFO
 # ETF_SOR_IFO와 CUS_TP_IFO에서 제공하는 날짜가 다름
 # ETF_SOR_IFO와 CUS_TP_IFO 중 겹치는 일자만 사용하기로 가정
-date_list = np.array(list(set(sorted(ETF_SOR_IFO['bse_dt'].unique())) & set(sorted(CUS_TP_IFO['bse_dt'].unique()))))
+date_list = common_dates(ETF_SOR_IFO['bse_dt'], CUS_TP_IFO['bse_dt'])
 date_list
 
 

@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 import pandas as pd
 import numpy as np
 import re
-from sklearn.preprocessing import StandardScaler
+from clustering_core import common_dates, fit_kmeans, standardize_features
 
 # 시각화
 from sklearn.manifold import TSNE
@@ -63,7 +63,7 @@ CUS_TP_IFO['tck_iem_cd'] = CUS_TP_IFO['tck_iem_cd'].str.rstrip()
 # ETF_SOR_IFO와 CUS_TP_IFO에서 제공하는 날짜가 다름
 # -> ETF_SOR_IFO와 CUS_TP_IFO 중 겹치는 일자만 사용하기로 가정
 # 최종 사용할 날짜는 20240528 ~ 20240826(61일)
-date_list = np.array(sorted(set(ETF_SOR_IFO['bse_dt'].unique()) & set(CUS_TP_IFO['bse_dt'].unique())))
+date_list = common_dates(ETF_SOR_IFO['bse_dt'], CUS_TP_IFO['bse_dt'])
 
 # 며칠간의 데이터를 이용해서 군집화를 진행할 것인지 정의
 # 해당 서비스의 이용자가 1일, 5일, 10일, 30일, 60일 중 선택할 수 있도록 제공할 계획
@@ -298,10 +298,7 @@ print('2. ETF 관련 데이터들을 이용한 군집화 진행')
 print('2-1. 군집화를 위한 데이터 전처리')
 
 # 군집화를 위한 스케일링 진행 -> StandardScaler 사용
-scaler = StandardScaler()
-scaler.fit(etf_infos)
-etf_infos_std = scaler.transform(etf_infos)
-etf_infos_std = pd.DataFrame(etf_infos_std, columns=etf_infos.columns, index=etf_infos.index)
+etf_infos_std = standardize_features(etf_infos)
 
 # 군집화 대상 컬럼이 많다고 판단(군집화 성능 지표도 안좋았음) -> 차원 축소 진행
 # 비선형 차원 축소 기법인 t-SNE 사용
@@ -353,7 +350,7 @@ print('2-2-b. 군집 방법들 간의 성능 지표 비교')
 cluster_result = pd.DataFrame(columns=["Method", 'cluster_n', "Silhouette", "Calinski-Harabasz", "Davies-Bouldin"])
 for method in ["KMeans", "Agglomerative", "Spectral", "MeanShift"]:
     if method == "KMeans":
-        model = KMeans(n_clusters=kmeans_optimal, random_state=42).fit(etf_infos_tsne)
+        model = fit_kmeans(etf_infos_tsne, kmeans_optimal)
         cluster_n = kmeans_optimal
         labels = model.labels_
 
@@ -382,7 +379,7 @@ for method in ["KMeans", "Agglomerative", "Spectral", "MeanShift"]:
 # [성능 출력 결과]
 ## Silhouette : 0.434266, Calinski-Harabasz : 266.694501, Davies-Bouldin : 0.737051
 # 군집 4개, K-means 알고리즘을 이용하여 군집화 및 군집 해석 진행
-final_model = KMeans(n_clusters=kmeans_optimal, random_state=42).fit(etf_infos_tsne)
+final_model = fit_kmeans(etf_infos_tsne, kmeans_optimal)
 
 # 차원 축소하기 전 데이터에 군집 결과 추가
 etf_infos_std['cluster'] = final_model.labels_

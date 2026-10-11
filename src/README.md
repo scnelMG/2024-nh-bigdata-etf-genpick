@@ -8,6 +8,7 @@
 | --- | --- |
 | `clustering_pipeline.py` | ETF 지표 병합, 전처리, 군집화 실험 중심 코드 |
 | `gen_pick_full_pipeline.py` | 군집화, 생성형 AI 요약, TF-IDF/XGBoost/SHAP 키워드 도출 통합 코드 |
+| `clustering_core.py` | 두 스크립트에서 사용하는 날짜 교집합과 통합 코드의 표준화·K-Means 로직. 합성 입력 회귀 테스트 대상 |
 
 ## Running Notes
 
