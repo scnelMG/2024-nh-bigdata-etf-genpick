@@ -29,6 +29,23 @@ ETF는 수익률만으로 설명하기 어렵습니다. 추적오차, 변동성,
 - TF-IDF, XGBoost, SHAP을 활용해 보유 기업 설명 키워드와 수익 관련 신호를 연결
 - NH 제한 데이터와 보안 서약/폐기 서약 자료를 제외한 공개 안전성 정리
 
+## 개인 작업의 코드와 결과
+
+**박민규 · AI 요약 흐름과 텍스트 설명 근거**
+
+| 개인 작업 | 공개 구현·입력 예시 | 실제 산출물 |
+| --- | --- | --- |
+| 상위 보유 종목을 이용한 AI 요약 | [상위 30개 선택·요약 요청 코드](src/gen_pick_full_pipeline.py#L474) · [보유 종목 설명 입력 예시](results/sample_top_holdings_descriptions.csv) | 요약 방식과 군집 일관성 검토 기준은 [방법론](docs/methodology.md#generative-ai-etf-summary)에 정리했다 |
+| TF-IDF·XGBoost·SHAP 설명 | [텍스트 벡터화·수익률 회귀·SHAP 코드](src/gen_pick_full_pipeline.py#L639) | [전체 키워드 중요도 CSV](results/keyword_importance_shap.csv) · [ABBV 개별 설명 CSV](results/sample_0_ABBV_shap_values.csv) |
+
+<p align="center">
+  <img src="assets/presentation-slide-22-shap-keywords.png" alt="최종 발표자료 22쪽: 기업 설명의 TF-IDF 벡터화, 수익률 회귀 모델과 전체·개별 종목 SHAP 키워드 결과" width="900" />
+</p>
+
+실제 발표자료의 텍스트 설명 결과다. `platform`·`segment` 등은 이 프로젝트에서 학습한 **수익률 회귀 모델의 설명 변수**다. 군집 분류의 중요도, 투자 성과 개선이나 미래 수익의 인과 근거와 구분한다. AI 요약에는 별도의 정답 요약 평가셋이 없으며, 검토 범위는 [방법론](docs/methodology.md#summary-evaluation-strategy)을 따른다.
+
+아래 군집 비교 표와 군집 이미지는 팀 분석 결과다. 개인 작업은 위 요약 코드·SHAP 산출물로 확인할 수 있다.
+
 ## 기술적 의사결정
 
 | 영역 | 선택 | 이유 |
@@ -41,7 +58,9 @@ ETF는 수익률만으로 설명하기 어렵습니다. 추적오차, 변동성,
 
 ## 파이프라인
 
-> **분석 흐름**: ETF 정량 지표 → 표준화 → 군집화 모델 비교 → 대표 ETF 선정 → 보유 종목 설명 요약 → TF-IDF·XGBoost·SHAP → 군집별 설명 근거
+> **군집·요약 흐름**: ETF 정량 지표 → 표준화 → 군집화 모델 비교 → 대표 ETF 선정 → 상위 보유 종목 설명 요약
+>
+> **텍스트 설명 흐름**: 보유 기업 설명 → TF-IDF → 평균 수익률 회귀 → SHAP 키워드·종목별 설명
 
 ## 결과 근거
 
