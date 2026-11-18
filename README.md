@@ -2,7 +2,7 @@
 
 <p align="center">2024 NH투자증권 빅데이터 경진대회 · 금융 데이터 분석 · ETF 클러스터링 · 생성형 AI</p>
 
-> ETF를 정량 지표로 군집화하고, 대표 ETF와 보유 종목 설명을 생성형 AI/SHAP 근거로 해석한 금융 데이터 프로덕트다.
+> ETF 지표로 군집을 나누고, 생성형 AI로 보유 종목을 요약하며, 수익률 회귀 모델의 SHAP 값으로 기업 설명 키워드를 해석한 프로젝트다.
 
 [![Python](https://img.shields.io/badge/Python-Data%20Analysis-3776AB?logo=python&logoColor=white)](requirements.txt)
 [![scikit--learn](https://img.shields.io/badge/scikit--learn-Clustering-F7931E?logo=scikitlearn&logoColor=white)](src/clustering_pipeline.py)
@@ -13,7 +13,7 @@
 
 Gen Pick은 2024 NH투자증권 빅데이터 경진대회에서 진행한 ETF 추천/설명 프로젝트다. ETF의 수익, 위험, 배당, 보유 비중, 고객 보유 패턴 지표를 바탕으로 ETF를 군집화하고, 각 군집을 대표하는 ETF와 주요 보유 종목을 설명 가능한 형태로 정리했다.
 
-이 저장소는 투자 조언이나 수익률 예측 모델이 아니라, 금융 데이터 분석 과정을 현업자가 검토할 수 있도록 정리한 공개 안전 포트폴리오다.
+이 저장소는 금융 데이터 분석 과정과 결과를 검토할 수 있도록 정리한 공개 포트폴리오다. 수익률 회귀는 기업 설명 키워드의 기여를 분석하는 데 사용했으며, 그 결과를 투자 조언이나 검증된 미래 수익 예측으로 해석하지 않는다.
 
 ## 문제 정의
 
@@ -52,9 +52,11 @@ ETF는 수익률만으로 설명하기 어렵다. 추적오차, 변동성, 샤�
 | --- | --- | --- |
 | 군집화 | KMeans 중심 비교 | ETF 유형을 리뷰 가능한 수의 그룹으로 나누고 대표 ETF를 선정하기 쉽다. |
 | 모델 비교 | KMeans, Agglomerative, Spectral, MeanShift | 군집 구조가 특정 알고리즘에만 의존하지 않는지 비교했다. |
-| 설명 모델 | XGBoost feature importance | 군집을 나누는 핵심 지표를 설명하기 위해 사용했다. |
-| 설명 근거 | TF-IDF + SHAP | 보유 종목 설명에서 어떤 키워드가 모델 판단에 기여했는지 확인했다. |
+| 군집 설명 · 팀 분석 | XGBoost 분류 모델의 feature importance | 군집 라벨을 예측하는 보조 모델로 ETF 지표의 구분 근거를 확인했다. |
+| 텍스트 설명 · 개인 작업 | TF-IDF · XGBoost 회귀 · SHAP | 평균 수익률을 대상으로 학습한 회귀 모델에서 기업 설명 키워드의 기여를 확인했다. |
 | 생성형 AI | 상위 보유 종목 요약 | ETF의 주요 노출 산업과 사업 맥락을 사람이 읽기 쉽게 정리했다. |
+
+군집 설명의 [분류 모델](src/gen_pick_full_pipeline.py#L399)과 텍스트 설명의 [회귀 모델](src/gen_pick_full_pipeline.py#L668)은 입력과 목표가 다르다.
 
 ## 파이프라인
 
